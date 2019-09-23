@@ -1,25 +1,35 @@
 package me.whiteshop.demoinflearnrestapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.whiteshop.demoinflearnrestapi.common.RestDocsConfiguration;
 import me.whiteshop.demoinflearnrestapi.common.TestDescription;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.headers.RequestHeadersSnippet;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
+@Import(RestDocsConfiguration.class)
 public class EventControllerTest {
 
     @Autowired
@@ -68,6 +80,48 @@ public class EventControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.query-events").exists())
                 .andExpect(jsonPath("_links.update-event").exists())
+                .andDo(document("create-event",
+                        links(   linkWithRel("self").description("link to self"),
+                                 linkWithRel("query-events").description("link to query events"),
+                                 linkWithRel("update-event").description("link to update events")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept headers"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("Name of new Event"),
+                                fieldWithPath("description").description("description Of new Event"),
+                                fieldWithPath("beginEnrollmentDateTime").description("date time Of begin Event"),
+                                fieldWithPath("closeEnrollmentDateTime").description("date time Of close Event"),
+                                fieldWithPath("beginEventDateTime").description("date time Of begin Event"),
+                                fieldWithPath("endEventDateTime").description("date time Of close Event"),
+                                fieldWithPath("location").description("location Of new Event"),
+                                fieldWithPath("basePrice").description("basePrice Of new Event"),
+                                fieldWithPath("maxPrice").description("maxPrice Of new Event"),
+                                fieldWithPath("limitOfEnrollment").description("limitOfEnrollment Of new Event")
+                                ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("location headers"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("id").description("id of new Event"),
+                                fieldWithPath("name").description("Name of new Event"),
+                                fieldWithPath("description").description("description Of new Event"),
+                                fieldWithPath("beginEnrollmentDateTime").description("date time Of begin Event"),
+                                fieldWithPath("closeEnrollmentDateTime").description("date time Of close Event"),
+                                fieldWithPath("beginEventDateTime").description("date time Of begin Event"),
+                                fieldWithPath("endEventDateTime").description("date time Of close Event"),
+                                fieldWithPath("location").description("location Of new Event"),
+                                fieldWithPath("basePrice").description("basePrice Of new Event"),
+                                fieldWithPath("maxPrice").description("maxPrice Of new Event"),
+                                fieldWithPath("limitOfEnrollment").description("limitOfEnrollment Of new Event"),
+                                fieldWithPath("free").description("free or not"),
+                                fieldWithPath("offline").description("offline or not"),
+                                fieldWithPath("eventStatus").description("eventStatus")
+                        )
+                ))
         ;
     }
 
