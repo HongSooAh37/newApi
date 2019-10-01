@@ -18,6 +18,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.headers.RequestHeadersSnippet;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
+@ActiveProfiles("test")
 public class EventControllerTest {
 
     @Autowired
@@ -83,7 +85,8 @@ public class EventControllerTest {
                 .andDo(document("create-event",
                         links(   linkWithRel("self").description("link to self"),
                                  linkWithRel("query-events").description("link to query events"),
-                                 linkWithRel("update-event").description("link to update events")
+                                 linkWithRel("update-event").description("link to update events"),
+                                 linkWithRel("profile").description("link to update an existing event")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept headers"),
@@ -119,7 +122,11 @@ public class EventControllerTest {
                                 fieldWithPath("limitOfEnrollment").description("limitOfEnrollment Of new Event"),
                                 fieldWithPath("free").description("free or not"),
                                 fieldWithPath("offline").description("offline or not"),
-                                fieldWithPath("eventStatus").description("eventStatus")
+                                fieldWithPath("eventStatus").description("eventStatus"),
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.query-events.href").description("link to query event list"),
+                                fieldWithPath("_links.update-event.href").description("link to update existing event"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ))
         ;

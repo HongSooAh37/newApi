@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.h2.engine.Mode;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,7 @@ public class EventController {
         eventResource.add(linkTo(EventController.class).withRel("query-events"));
        // EventResource에 이미 처리, so 해당 class에서 주석 :  eventResource.add(selfLinkBuilder.withSelfRel());
         eventResource.add(selfLinkBuilder.withRel("update-event"));
+        eventResource.add(new Link("/docs/index.html#resources-events-create").withRel("profile"));
         return ResponseEntity.created(createdUri).body(eventResource);
     }
 }
