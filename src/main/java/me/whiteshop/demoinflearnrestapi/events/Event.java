@@ -1,6 +1,7 @@
 package me.whiteshop.demoinflearnrestapi.events;
 
 import lombok.*;
+import me.whiteshop.demoinflearnrestapi.accounts.Account;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,6 +27,8 @@ public class Event {
     private boolean free;
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
+    @ManyToOne
+    private Account manager;
 
     public void update() {
         if(this.basePrice == 0 && this.maxPrice == 0){
