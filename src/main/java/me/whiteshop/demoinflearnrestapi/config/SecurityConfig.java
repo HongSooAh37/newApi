@@ -60,16 +60,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    }*/
 
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .anonymous()
-                    .and()
-                .formLogin()
-                    .and()
-                .authorizeRequests()
-                    .mvcMatchers(HttpMethod.GET, "/api/**").authenticated()
-                    .anyRequest().authenticated()
-                ;
-    }
 }
