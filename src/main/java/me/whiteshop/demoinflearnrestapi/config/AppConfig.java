@@ -1,8 +1,10 @@
 package me.whiteshop.demoinflearnrestapi.config;
 
 import me.whiteshop.demoinflearnrestapi.accounts.Account;
+import me.whiteshop.demoinflearnrestapi.accounts.AccountRepository;
 import me.whiteshop.demoinflearnrestapi.accounts.AccountRole;
 import me.whiteshop.demoinflearnrestapi.accounts.AccountService;
+import me.whiteshop.demoinflearnrestapi.common.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -35,14 +37,24 @@ public class AppConfig {
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Account suah = Account.builder()
-                                        .email("hsa3737@naver.com")
-                                        .password("hsa")
+                Account admin = Account.builder()
+                                        .email(appProperties.getAdminUsername())
+                                        .password(appProperties.getAdminPassword())
                                         .roles(Set.of(AccountRole.ADMIN,AccountRole.USER))
                                         .build();
-                accountService.saveAccount(suah);
+                accountService.saveAccount(admin);
+
+                Account user = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(Set.of(AccountRole.USER))
+                        .build();
+                accountService.saveAccount(user);
             }
         };
     }
